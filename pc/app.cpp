@@ -17,7 +17,7 @@ void save_ppm(const float* pixels, uint32_t w, uint32_t h, const char* path) {
 
 int main(int argc, const char** argv) {
   ti::Runtime runtime(TI_ARCH_VULKAN);
-  ti::AotModule aot_module = runtime.load_aot_module("module.tcm");
+  ti::AotModule aot_module = runtime.load_aot_module("./build/assets/module.tcm");
   ti::Kernel kernel_paint = aot_module.get_kernel("paint");
 
   int n = 320;
@@ -31,7 +31,7 @@ int main(int argc, const char** argv) {
   runtime.wait();
 
   auto pixels_data = (const float*)pixels.map();
-  save_ppm(pixels_data, 2 * n, n, "result.ppm");
+  save_ppm(pixels_data, 2 * n, n, "./build/result.ppm");
   pixels.unmap();
 
   return 0;

@@ -25,3 +25,9 @@ set_target_properties(${TAICHI_NERF_DEMO_NAME} PROPERTIES
   RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
   RUNTIME_OUTPUT_DIRECTORY_DEBUG ${CMAKE_BINARY_DIR}
   RUNTIME_OUTPUT_DIRECTORY_RELEASE ${CMAKE_BINARY_DIR})
+
+
+# set assets
+set(asset_source "${CMAKE_SOURCE_DIR}/../taichi_algorithm/")
+set(asset_dest "${CMAKE_CURRENT_BINARY_DIR}/assets")
+file(COPY ${asset_source} DESTINATION ${asset_dest})
