@@ -5,10 +5,34 @@ project(${TAICHI_AOT_APP_NAME} LANGUAGES C CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(TAICHI_C_API_INSTALL_DIR $ENV{TAICHI_C_API_INSTALL_DIR})
-find_library(taichi_c_api taichi_c_api HINTS
-    ${TAICHI_C_API_INSTALL_DIR}/lib
-    NO_CMAKE_FIND_ROOT_PATH)
+if (APPLE AND (NOT IOS))
+    set(OSX ON)
+elseif (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+    if (${CMAKE_SYSTEM_PROCESSOR} MATCHES "^aarch64")
+        if (CMAKE_CUDA_COMPILER)
+            set(TEGRA ON)
+        else()
+            set(QUALCOMM ON)
+        endif()
+    else ()
+        set(LINUX ON)
+    endif ()
+endif ()
+
+set(TAICHI_PROJECT_DIR $ENV{TAICHI_PROJECT_DIR})
+if (LINUX)
+	set(TAICHI_C_API_INSTALL_DIR ${TAICHI_PROJECT_DIR}/c_api/linux/)
+	find_library(taichi_c_api taichi_c_api HINTS
+		${TAICHI_C_API_INSTALL_DIR}/lib
+		NO_CMAKE_FIND_ROOT_PATH)
+
+elseif (OSX)
+	set(TAICHI_C_API_INSTALL_DIR ${TAICHI_PROJECT_DIR}/c_api/osx/)
+	find_library(taichi_c_api taichi_c_api HINTS
+		${TAICHI_C_API_INSTALL_DIR}/lib
+		NO_CMAKE_FIND_ROOT_PATH)
+endif()
+
 
 message("taichi c api path: ${TAICHI_C_API_INSTALL_DIR}")
 if (NOT EXISTS ${taichi_c_api})

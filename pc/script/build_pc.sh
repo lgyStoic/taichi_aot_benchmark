@@ -4,7 +4,8 @@ set -e
 rm -rf build
 mkdir build
 pushd build
-TAICHI_C_API_INSTALL_DIR="${PWD}/../c_api" cmake ..
+
+TAICHI_PROJECT_DIR="${PWD}/.." cmake ..
 if [ $? -ne 0 ]; then
     echo "Configuration failed"
     exit -1

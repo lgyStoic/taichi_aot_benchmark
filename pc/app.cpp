@@ -16,7 +16,7 @@ void save_ppm(const float* pixels, uint32_t w, uint32_t h, const char* path) {
 }
 
 int main(int argc, const char** argv) {
-  ti::Runtime runtime(TI_ARCH_VULKAN);
+  ti::Runtime runtime(TI_ARCH_METAL);
   ti::AotModule aot_module = runtime.load_aot_module("./build/assets/module.tcm");
   ti::Kernel kernel_paint = aot_module.get_kernel("paint");
 
