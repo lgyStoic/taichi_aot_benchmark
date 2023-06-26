@@ -19,7 +19,6 @@ virtual AOT_APP& create_name(std::string &modulePath, TiArch arch) {
     aotModule_ = runtimePtr_->load_aot_module(modulePath);
     assert(aotModule_.is_valid());
     hasCreated_ = aotModule_.is_valid();
-    std::cout << "app is " << hasCreated_ << std::endl; 
     return *this;
 };
 

@@ -11,17 +11,24 @@ void GEMM_APP::prepare() {
     uint32_t k = 1;
 
     // device memory 
-    ti::NdArray<float> A = runtimePtr_->allocate_ndarray<float>({m,k}, {1}, true);
-    ti::NdArray<float> B = runtimePtr_->allocate_ndarray<float>({k,n}, {1}, true);
+    A_ = runtimePtr_->allocate_ndarray<float>({m,k}, {1}, true);
+    B_ = runtimePtr_->allocate_ndarray<float>({k,n}, {1}, true);
     output_ = runtimePtr_->allocate_ndarray<float>({m,n}, {1}, true);
 
     // host memory
-    A.write({0.0, 1.0});
-    B.write({1.0, 2.0});
+    float *aptr = static_cast<float*>(A_.map());
+    float *bptr = static_cast<float*>(B_.map());
+
+    aptr[0] = 3.1;
+    aptr[1] = 1.1;
+    bptr[0] = 1.1;
+    bptr[1] = 2.0;
+    A_.unmap();
+    B_.unmap();
 
     gemm_kernel_[0] = output_;
-    gemm_kernel_[1] = A;
-    gemm_kernel_[2] = B;
+    gemm_kernel_[1] = A_;
+    gemm_kernel_[2] = B_;
     gemm_kernel_[3] = (int32_t)k;
 }
 
@@ -39,6 +46,7 @@ void GEMM_APP::output() {
     }
     std::cout << std::endl;
     output_.unmap();
+
 }
 
 GEMM_APP::~GEMM_APP() {

@@ -16,8 +16,8 @@ if args.type == 'run':
 elif args.type == 'compile':
     run_type = RUN_TYPE.COMPILE
 
-ti.init(arch=ti.metal)
-if ti.lang.impl.current_cfg().arch != ti.metal:
+ti.init(arch=ti.vulkan)
+if ti.lang.impl.current_cfg().arch != ti.vulkan:
     raise RuntimeError("Vulkan is not available.")
 
 @ti.kernel
@@ -55,6 +55,6 @@ if __name__ == "__main__":
         print(C_f[1, 1])
 
     elif run_type == RUN_TYPE.COMPILE:
-        mod = ti.aot.Module(ti.metal)
+        mod = ti.aot.Module(ti.vulkan)
         mod.add_kernel(gemm)
         mod.archive("taichi_gemm.tcm")

@@ -17,6 +17,8 @@ public:
 private:
     ti::Kernel gemm_kernel_;
     ti::NdArray<float> output_;
+    ti::NdArray<float> A_;
+    ti::NdArray<float> B_;
 
 };
 }
