@@ -39,17 +39,18 @@ if (NOT EXISTS ${taichi_c_api})
     message(FATAL_ERROR "Couldn't find C-API library; ensure your Taichi is built with `TI_WITH_CAPI=ON`")
 endif()
 
-set(SRC 
-    gemm.cpp)
-set(HEADER 
-    base.h)
-
-add_library(taichi_aot_lib STATIC ${SRC})
+add_library(taichi_aot_lib 
+	STATIC 
+	gemm.h
+	gemm.cpp
+	base.h
+	)
 target_include_directories(taichi_aot_lib PUBLIC ${TAICHI_C_API_INSTALL_DIR}/include)
 target_link_libraries(taichi_aot_lib ${taichi_c_api})
 
 # Declare executable target.
 add_executable(${TAICHI_AOT_APP_NAME} app.cpp)
+target_link_libraries(${TAICHI_AOT_APP_NAME} taichi_aot_lib)
 
 # set assets
 set(asset_source "${CMAKE_SOURCE_DIR}/../taichi_algorithm/")

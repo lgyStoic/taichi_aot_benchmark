@@ -1,5 +1,5 @@
 #include <fstream>
-#include <taichi/cpp/taichi.hpp>
+#include "gemm.h"
 
 void save_ppm(const float* pixels, uint32_t w, uint32_t h, const char* path) {
   std::fstream f(path, std::ios::out | std::ios::trunc);
@@ -16,24 +16,12 @@ void save_ppm(const float* pixels, uint32_t w, uint32_t h, const char* path) {
 }
 
 int main(int argc, const char** argv) {
-  ti::Runtime runtime(TI_ARCH_METAL);
-  ti::AotModule aot_module = runtime.load_aot_module("./build/assets/module.tcm");
-  ti::Kernel kernel_paint = aot_module.get_kernel("paint");
-
-  int n = 320;
-  float t = 0.0f;
-  ti::NdArray<float> pixels = runtime.allocate_ndarray<float>({(uint32_t)(2 * n), (uint32_t)n}, {1}, true);
-
-  kernel_paint[0] = n;
-  kernel_paint[1] = t;
-  kernel_paint[2] = pixels;
-  kernel_paint.launch();
-  runtime.wait();
-
-  auto pixels_data = (const float*)pixels.map();
-  save_ppm(pixels_data, 2 * n, n, "./build/result.ppm");
-  pixels.unmap();
-
+  std::shared_ptr<taichi_aot::AOT_APP> app = std::make_shared<taichi_aot::GEMM_APP>();
+  std::string gemm_module = "./build/assets/bench_case/taichi_gemm.tcm";
+  app->create_name(gemm_module, TI_ARCH_METAL);
+  app->prepare();
+  app->run();
+  app->output();
   return 0;
 }
 

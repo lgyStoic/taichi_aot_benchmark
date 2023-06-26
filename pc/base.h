@@ -7,7 +7,7 @@
 namespace taichi_aot {
 struct  AOT_APP {
 
-AOT_APP() = delete;
+AOT_APP() = default;
 AOT_APP(const AOT_APP&) = delete;
 AOT_APP& operator=(const AOT_APP&) = delete;
 
@@ -18,6 +18,8 @@ virtual AOT_APP& create_name(std::string &modulePath, TiArch arch) {
 
     aotModule_ = runtimePtr_->load_aot_module(modulePath);
     assert(aotModule_.is_valid());
+    hasCreated_ = aotModule_.is_valid();
+    std::cout << "app is " << hasCreated_ << std::endl; 
     return *this;
 };
 
@@ -25,9 +27,12 @@ virtual void prepare() = 0;
 
 virtual void run() = 0;
 
-virtual ~AOT_APP();
+virtual void output() = 0;
 
-static std::unique_ptr<ti::Runtime> runtimePtr_;
+virtual ~AOT_APP() = default;
+
+bool hasCreated_;
+std::unique_ptr<ti::Runtime> runtimePtr_;
 ti::AotModule aotModule_;
 };
 }
