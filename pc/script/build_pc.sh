@@ -5,7 +5,7 @@ rm -rf build
 mkdir build
 pushd build
 
-TAICHI_PROJECT_DIR="${PWD}/.." cmake -DCMAKE_BUILD_TYPE=Debug .. 
+TAICHI_PROJECT_DIR="${PWD}/.." cmake -DCMAKE_BUILD_TYPE=Release .. 
 if [ $? -ne 0 ]; then
     echo "Configuration failed"
     exit -1

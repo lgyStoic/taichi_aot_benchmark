@@ -1,7 +1,7 @@
 #include "gemm.h"
+#include <iostream>
 #include <taichi/taichi_core.h>
 #include <opencv2/opencv.hpp>
-#include <chrono>
 namespace taichi_aot {
 
 
@@ -9,7 +9,7 @@ void GEMM_APP::prepare() {
     if (!hasCreated_) {std::cout << "wrong in create!! "<< std::endl;}
     gemm_kernel_ = aotModule_.get_kernel("gemm");
     uint32_t m = 256;
-    uint32_t n = 1024;
+    uint32_t n = 4096;
     uint32_t k = 4096;
 
     // device memory 
@@ -58,7 +58,8 @@ void GEMM_APP::output() {
     TiNdShape a_shape = A_.shape();
     TiNdShape b_shape = B_.shape();
     TiNdShape c_shape = output_.shape();
-    std::cout << "taichi GFLOPS :" << static_cast<float>(2 * a_shape.dims[0] * a_shape.dims[1] * b_shape.dims[1]) / (end_ - start_).count() << std::endl;
+
+    std::cout << "taichi aot GFLOPS :" << static_cast<float>(2) * a_shape.dims[0] * a_shape.dims[1] * b_shape.dims[1] / (end_ - start_).count() << std::endl;
 
     float *a_ptr = static_cast<float*>(A_.map());
     float *b_ptr = static_cast<float*>(B_.map());
@@ -68,7 +69,7 @@ void GEMM_APP::output() {
     start_ = std::chrono::steady_clock::now();
     cv::Mat Cmat = Amat * Bmat;
     end_ = std::chrono::steady_clock::now();
-    std::cout << "opencv GFLOPS :" << static_cast<float>(2 * a_shape.dims[0] * a_shape.dims[1] * b_shape.dims[1]) / (end_ - start_).count() << std::endl;
+    std::cout << "opencv GFLOPS :" << static_cast<float>(2) * a_shape.dims[0] * a_shape.dims[1] * b_shape.dims[1] / (end_ - start_).count() << std::endl;
 
     float *cptr = static_cast<float *>(output_.map());
     cv::Mat taichiCMat(c_shape.dims[0], c_shape.dims[1], CV_32FC1, cptr);
