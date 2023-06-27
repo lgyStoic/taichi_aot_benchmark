@@ -19,6 +19,8 @@ private:
     ti::NdArray<float> output_;
     ti::NdArray<float> A_;
     ti::NdArray<float> B_;
+    decltype (std::chrono::steady_clock::now()) start_;
+    decltype (std::chrono::steady_clock::now()) end_;
 
 };
 }
