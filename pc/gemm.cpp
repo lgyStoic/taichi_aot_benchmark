@@ -90,6 +90,6 @@ void GEMM_APP::output() {
 }
 
 GEMM_APP::~GEMM_APP() {
-
+    runtimePtr_->destroy();
 }
 }

@@ -12,6 +12,11 @@ void prepare() override;
 void run() override;
 
 void output() override;
+
+private:
+ti::Kernel reduce_kernel_;
+
+ti::NdArray<float> A_;
     
 };
 

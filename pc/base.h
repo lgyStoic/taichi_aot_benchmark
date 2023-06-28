@@ -33,6 +33,9 @@ virtual ~AOT_APP() = default;
 bool hasCreated_;
 std::unique_ptr<ti::Runtime> runtimePtr_;
 ti::AotModule aotModule_;
+
+decltype (std::chrono::steady_clock::now()) start_;
+decltype (std::chrono::steady_clock::now()) end_;
 };
 }
 
