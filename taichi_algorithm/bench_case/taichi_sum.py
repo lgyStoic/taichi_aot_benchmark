@@ -22,11 +22,11 @@ if ti.lang.impl.current_cfg().arch != ti.vulkan:
     raise RuntimeError("Vulkan is not available.")
 
 @ti.kernel
-def reduce_sum_kernel(f: ti.types.ndarray(dtype=ti.f32, ndim=1))->ti.f32:
+def reduce_sum_kernel(f: ti.types.ndarray(dtype=ti.f32, ndim=1)):
     sum = 0.0
     for i in f:
         sum += f[i]
-    return sum
+    f[0] = sum
 
 if __name__ == "__main__":
     if run_type == RUN_TYPE.RUN_DIRECT:
@@ -34,8 +34,9 @@ if __name__ == "__main__":
         A_f = ti.ndarray(dtype=ti.f32, shape=(n))
         n_arr = np.random.rand(n).astype(np.float32)
         A_f.from_numpy(n_arr)
-        sum = reduce_sum_kernel(A_f)
-        print(sum)
+        reduce_sum_kernel(A_f)
+        ti.sync()
+        print(A_f[0])
     else:
         mod = ti.aot.Module(ti.vulkan)
         mod.add_kernel(reduce_sum_kernel)

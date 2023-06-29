@@ -17,6 +17,8 @@ private:
 ti::Kernel reduce_kernel_;
 
 ti::NdArray<float> A_;
+
+float sumValue_;
     
 };
 

@@ -43,6 +43,8 @@ add_library(taichi_aot_lib
 	STATIC 
 	gemm.h
 	gemm.cpp
+	reduce_sum.h
+	reduce_sum.cpp
 	base.h
 	)
 target_include_directories(taichi_aot_lib PUBLIC ${TAICHI_C_API_INSTALL_DIR}/include)
