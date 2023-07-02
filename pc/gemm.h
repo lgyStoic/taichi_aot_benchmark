@@ -2,7 +2,6 @@
 #define __GEMM_H__
 #include "base.h"
 #include <string>
-#include <chrono>
 namespace taichi_aot {
 class GEMM_APP: public AOT_APP {
 public:

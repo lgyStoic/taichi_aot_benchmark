@@ -3,6 +3,7 @@
 #include <string>
 #include <taichi/cpp/taichi.hpp>
 #include <memory>
+#include <chrono>
 
 namespace taichi_aot {
 struct  AOT_APP {

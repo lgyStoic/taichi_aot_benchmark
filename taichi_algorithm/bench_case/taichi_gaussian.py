@@ -3,6 +3,22 @@ import taichi as ti
 import taichi.math as tm
 import math
 import numpy as np
+import time
+import argparse
+from enum import Enum
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--type", default="run", type=str)
+
+args = parser.parse_args()
+class RUN_TYPE(Enum):
+    COMPILE = 1
+    RUN_DIRECT = 2
+
+if args.type == 'run':
+    run_type = RUN_TYPE.RUN_DIRECT
+elif args.type == 'compile':
+    run_type = RUN_TYPE.COMPILE
 
 ti.init(arch=ti.vulkan)
 
@@ -11,9 +27,7 @@ img2d = ti.types.ndarray(dtype=ti.math.vec3, ndim=2)
 def compute_weights(radius, sigma):
     weights = np.zeros((2 * radius + 1), dtype=np.float32)
     total = 0.0
-    # Not much computation here - serialize the for loop to save two more GPU kernel launch costs
     for i in range(0, 2 * radius + 1):
-        # Drop the normal distribution constant coefficients since we need to normalize later anyway
         val = ti.exp(-0.5 * ((i - radius) / sigma)**2)
         weights[i] = val
         total += val
@@ -51,16 +65,30 @@ def gaussian_blur(img: img2d, weights: ti.types.ndarray(dtype=ti.f32, ndim=1), i
         img[i, j] = (total_rgb / total_weight).cast(ti.u8)
 
 if __name__ == "__main__":
-    img = cv2.imread('./mountain.jpg')
-    cv2.imshow('input', img)
-    sigma = 10
-    radius = math.ceil(sigma * 3)
-    win_sz = 2 * radius + 1
-    weights = compute_weights(radius, sigma) 
-    weightsNdarray = ti.ndarray(dtype=ti.f32, shape=(win_sz))
-    weightsNdarray.from_numpy(weights)
-    img_blurred = ti.ndarray(dtype=ti.math.vec3, shape=(img.shape[0], img.shape[1]))
+    if run_type == RUN_TYPE.RUN_DIRECT:
+        img = cv2.imread('./mountain.jpg')
+        cv2.imshow('input', img)
+        sigma = 20.0
+        radius = math.ceil(sigma * 3)
+        win_sz = 2 * radius + 1
+        weights = compute_weights(radius, sigma) 
+        weightsNdarray = ti.ndarray(dtype=ti.f32, shape=(win_sz))
+        weightsNdarray.from_numpy(weights)
+        img_blurred = ti.ndarray(dtype=ti.math.vec3, shape=(img.shape[0], img.shape[1]))
 
-    gaussian_blur(img, weightsNdarray, img_blurred)
+        start = time.time()
+        gaussian_blur(img, weightsNdarray, img_blurred)
+    
+        print(f"imge process %s second" % (time.time() - start))
 
-    cv2.imwrite("./mountain_blur.jpg", img)
+        cv2.imwrite("./mountain_blur.jpg", img)
+
+        img = cv2.imread('./mountain.jpg')
+        start = time.time()
+        img = cv2.GaussianBlur(img, (win_sz, win_sz), sigmaX=sigma, sigmaY=sigma)
+        print(f"opencv imge process %s second" % (time.time() - start))
+        cv2.imwrite("./mountain_blur_opencv.jpg", img)
+    else:
+        mod = ti.aot.Module(ti.vulkan)
+        mod.add_kernel(gaussian_blur)
+        mod.archive("taichi_gaussian.tcm")
