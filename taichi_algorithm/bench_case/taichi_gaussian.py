@@ -89,6 +89,6 @@ if __name__ == "__main__":
         print(f"opencv imge process %s second" % (time.time() - start))
         cv2.imwrite("./mountain_blur_opencv.jpg", img)
     else:
-        mod = ti.aot.Module(ti.vulkan)
+        mod = ti.aot.Module(ti.vulkan, caps=[ti.DeviceCapability.spirv_has_int8])
         mod.add_kernel(gaussian_blur)
         mod.archive("taichi_gaussian.tcm")
