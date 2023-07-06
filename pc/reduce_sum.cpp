@@ -27,6 +27,7 @@ void REDUCE_APP::output() {
     float *a_ptr = static_cast<float *>(A_.map());
     sumValue_ = *a_ptr;
     A_.unmap();
+    std::cout << "result :" << sumValue_ << std::endl;
 }
 
 }

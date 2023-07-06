@@ -20,9 +20,9 @@ if args.type == 'run':
 elif args.type == 'compile':
     run_type = RUN_TYPE.COMPILE
 
-ti.init(arch=ti.vulkan)
+ti.init(arch=ti.vulkan, debug=True)
 
-img2d = ti.types.ndarray(dtype=ti.math.vec3, ndim=2)
+img2d = ti.types.ndarray(dtype=ti.math.uvec3, ndim=2)
 
 def compute_weights(radius, sigma):
     weights = np.zeros((2 * radius + 1), dtype=np.float32)
@@ -48,7 +48,7 @@ def gaussian_blur(img: img2d, weights: ti.types.ndarray(dtype=ti.f32, ndim=1), i
         total_weight = 0.0
         for l in range(l_begin, l_end):
             w = weights[i - l + blur_radius]
-            total_rgb += img[l, j] * w
+            total_rgb += ti.cast(img[l, j], ti.f32) * w
             total_weight += w
 
         img_blurred[i, j] = (total_rgb / total_weight).cast(ti.u8)
@@ -59,7 +59,7 @@ def gaussian_blur(img: img2d, weights: ti.types.ndarray(dtype=ti.f32, ndim=1), i
         total_weight = 0.0
         for l in range(l_begin, l_end):
             w = weights[j - l + blur_radius]
-            total_rgb += img_blurred[i, l] * w
+            total_rgb += ti.cast(img_blurred[i, l], ti.f32) * w
             total_weight += w
 
         img[i, j] = (total_rgb / total_weight).cast(ti.u8)
@@ -67,14 +67,13 @@ def gaussian_blur(img: img2d, weights: ti.types.ndarray(dtype=ti.f32, ndim=1), i
 if __name__ == "__main__":
     if run_type == RUN_TYPE.RUN_DIRECT:
         img = cv2.imread('./mountain.jpg')
-        cv2.imshow('input', img)
         sigma = 20.0
         radius = math.ceil(sigma * 3)
         win_sz = 2 * radius + 1
         weights = compute_weights(radius, sigma) 
         weightsNdarray = ti.ndarray(dtype=ti.f32, shape=(win_sz))
         weightsNdarray.from_numpy(weights)
-        img_blurred = ti.ndarray(dtype=ti.math.vec3, shape=(img.shape[0], img.shape[1]))
+        img_blurred = ti.ndarray(dtype=ti.math.uvec3, shape=(img.shape[0], img.shape[1]))
 
         start = time.time()
         gaussian_blur(img, weightsNdarray, img_blurred)

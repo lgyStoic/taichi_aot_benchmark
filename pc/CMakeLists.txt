@@ -41,20 +41,23 @@ endif()
 
 add_library(taichi_aot_lib 
 	STATIC 
+	gaussian_filter.h
+	gaussian_filter.cpp
 	gemm.h
 	gemm.cpp
 	reduce_sum.h
 	reduce_sum.cpp
 	base.h
 	)
-target_include_directories(taichi_aot_lib PUBLIC ${TAICHI_C_API_INSTALL_DIR}/include)
-target_link_libraries(taichi_aot_lib ${taichi_c_api})
-
 find_package( OpenCV REQUIRED PATHS /Users/garryling/myocv/opencv/build/install/usr/local/lib/cmake/opencv4)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
+
+target_include_directories(taichi_aot_lib PUBLIC ${TAICHI_C_API_INSTALL_DIR}/include)
+target_link_libraries(taichi_aot_lib ${taichi_c_api} ${OpenCV_LIBS})
+
 # Declare executable target.
 add_executable(${TAICHI_AOT_APP_NAME} app.cpp)
-target_link_libraries(${TAICHI_AOT_APP_NAME} ${OpenCV_LIBS} taichi_aot_lib)
+target_link_libraries(${TAICHI_AOT_APP_NAME}  taichi_aot_lib)
 
 # set assets
 set(asset_source "${CMAKE_SOURCE_DIR}/../taichi_algorithm/")

@@ -31,7 +31,7 @@ virtual void output() = 0;
 
 virtual ~AOT_APP() = default;
 
-bool hasCreated_;
+bool hasCreated_ = false;
 std::unique_ptr<ti::Runtime> runtimePtr_;
 ti::AotModule aotModule_;
 

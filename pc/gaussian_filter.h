@@ -16,7 +16,7 @@ public:
 private:
     ti::Kernel gaussian_kernel_;
     ti::NdArray<uint8_t> img_;
-    ti::NdArray<uint8_t> blur_;
+    ti::NdArray<uint8_t> blurtemp_;
     ti::NdArray<float> weight_;
 
     const float sigma_ = 20.0;
