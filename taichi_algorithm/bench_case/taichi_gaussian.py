@@ -22,7 +22,7 @@ elif args.type == 'compile':
 
 ti.init(arch=ti.vulkan, debug=True)
 
-img2d = ti.types.ndarray(dtype=ti.math.uvec3, ndim=2)
+img2d = ti.types.ndarray(dtype=ti.types.vector(3, ti.u8), ndim=2)
 
 def compute_weights(radius, sigma):
     weights = np.zeros((2 * radius + 1), dtype=np.float32)
@@ -73,7 +73,7 @@ if __name__ == "__main__":
         weights = compute_weights(radius, sigma) 
         weightsNdarray = ti.ndarray(dtype=ti.f32, shape=(win_sz))
         weightsNdarray.from_numpy(weights)
-        img_blurred = ti.ndarray(dtype=ti.math.uvec3, shape=(img.shape[0], img.shape[1]))
+        img_blurred = ti.ndarray(dtype=ti.types.vector(3, ti.u8), shape=(img.shape[0], img.shape[1]))
 
         start = time.time()
         gaussian_blur(img, weightsNdarray, img_blurred)

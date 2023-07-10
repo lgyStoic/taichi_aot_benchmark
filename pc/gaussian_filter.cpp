@@ -19,15 +19,9 @@ void GAUSSIAN_APP::prepare() {
     for(auto &w : weight) {
         w /= total;
     }
-    for(auto w: weight) {
-        std::cout << w << " ";
-    }
-    std::cout << std::endl;
 
     // load image
     cv::Mat img = cv::imread("./build/assets/bench_case/mountain.jpg");
-    cv::Rect r(0, 0, 10, 10);
-    std::cout <<  img(r) << std::endl;
     img_ = runtimePtr_->allocate_ndarray<uint8_t>({img.rows, img.cols}, {img.elemSize()}, true);
     uint8_t *img_ptr = static_cast<uint8_t*>(img_.map());
     std::memcpy(img_ptr, img.data, img.total() * img.elemSize());
@@ -57,8 +51,6 @@ void GAUSSIAN_APP::output() {
     TiNdShape shape =  img_.shape();
     float* img_ptr = static_cast<float*>(img_.map());
     cv::Mat img(shape.dims[0], shape.dims[1], CV_8UC3, img_ptr);
-    cv::Rect r(0, 0, 10, 10);
-    std::cout <<  img(r) << std::endl;
     cv::imwrite("./build/assets/bench_case/mountain_blur.jpg", img);
     img_.unmap();
 
