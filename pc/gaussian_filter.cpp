@@ -39,6 +39,7 @@ void GAUSSIAN_APP::prepare() {
     std::memset(blur_ptr, 0, img.total() * img.elemSize());
     blurtemp_.unmap();
     gaussian_kernel_[2] = blurtemp_;
+    start_ = std::chrono::steady_clock::now();
 }
 
 void GAUSSIAN_APP::run() {
@@ -48,11 +49,22 @@ void GAUSSIAN_APP::run() {
 }
 
 void GAUSSIAN_APP::output() {
+    end_ = std::chrono::steady_clock::now();
+    std::cout << "gaussian cost :" << std::chrono::duration_cast<std::chrono::milliseconds>(end_ - start_).count()/ 1000.0 << std::endl;
     TiNdShape shape =  img_.shape();
     float* img_ptr = static_cast<float*>(img_.map());
     cv::Mat img(shape.dims[0], shape.dims[1], CV_8UC3, img_ptr);
     cv::imwrite("./build/assets/bench_case/mountain_blur.jpg", img);
     img_.unmap();
+
+    // vs opencv cost
+    img = cv::imread("./build/assets/bench_case/mountain.jpg");
+    cv::Mat img_cv_blur;
+    start_ = std::chrono::steady_clock::now();
+    int sz = 2 * radius_ + 1;
+    cv::GaussianBlur(img, img_cv_blur, cv::Size(sz, sz), sigma_, sigma_);
+    end_ = std::chrono::steady_clock::now();
+    std::cout << "opencv gaussian cost :" << std::chrono::duration_cast<std::chrono::milliseconds>(end_ - start_).count()/ 1000.0 << std::endl;
 
 }
 
