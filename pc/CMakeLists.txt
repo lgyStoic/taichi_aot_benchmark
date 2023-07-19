@@ -48,6 +48,8 @@ add_library(taichi_aot_lib
 	reduce_sum.h
 	reduce_sum.cpp
 	base.h
+	nlmean.cpp
+	nlmean.h
 	)
 find_package( OpenCV REQUIRED PATHS /Users/garryling/myocv/opencv/build/install/usr/local/lib/cmake/opencv4)
 include_directories( ${OpenCV_INCLUDE_DIRS} )

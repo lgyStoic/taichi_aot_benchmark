@@ -2,6 +2,7 @@
 #include "gemm.h"
 #include "reduce_sum.h"
 #include "gaussian_filter.h"
+#include "nlmean.h"
 
 void save_ppm(const float* pixels, uint32_t w, uint32_t h, const char* path) {
   std::fstream f(path, std::ios::out | std::ios::trunc);
@@ -38,6 +39,14 @@ int main(int argc, const char** argv) {
   app = std::make_shared<taichi_aot::GAUSSIAN_APP>();
   std::string gaussian_filter_module = "./build/assets/bench_case/taichi_gaussian.tcm";
   app->create_name(gaussian_filter_module, TI_ARCH_VULKAN);
+  app->prepare();
+  app->run();
+  app->output();
+
+  // nlm
+  app = std::make_shared<taichi_aot::NLMEAN_APP>();
+  std::string nlm_module = "./build/assets/bench_case/taichi_nlm.tcm";
+  app->create_name(nlm_module, TI_ARCH_VULKAN);
   app->prepare();
   app->run();
   app->output();

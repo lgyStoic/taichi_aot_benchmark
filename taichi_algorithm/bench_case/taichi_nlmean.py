@@ -43,8 +43,8 @@ def nlmean(img_pad: img2d, img_dest: img2d, halfKernelSz: ti.i32, halfSearchSz: 
             newPixel = ti.math.vec3(0.0, 0.0, 0.0)
             sumw = ti.math.vec3(0.0, 0.0, 0.0)
 
-            for sr in range(-halfSearchSz, halfSearchSz):
-                for sc in range(-halfSearchSz, halfSearchSz):
+            for sr in range(-halfSearchSz, halfSearchSz + 1):
+                for sc in range(-halfSearchSz, halfSearchSz + 1):
                     # mse block
                     patchA_i: ti.i32 = sr + i
                     patchA_j: ti.i32 = sc + j
