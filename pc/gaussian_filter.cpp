@@ -22,7 +22,7 @@ void GAUSSIAN_APP::prepare() {
 
     // load image
     cv::Mat img = cv::imread("./build/assets/bench_case/mountain.jpg");
-    img_ = runtimePtr_->allocate_ndarray<uint8_t>({img.rows, img.cols}, {img.elemSize()}, true);
+    img_ = runtimePtr_->allocate_ndarray<uint8_t>({(unsigned int)img.rows, (unsigned int)img.cols}, {(unsigned int)img.elemSize()}, true);
     uint8_t *img_ptr = static_cast<uint8_t*>(img_.map());
     std::memcpy(img_ptr, img.data, img.total() * img.elemSize());
     img_.unmap();
@@ -34,7 +34,7 @@ void GAUSSIAN_APP::prepare() {
     gaussian_kernel_[1] = weight_;
 
     // tmp memory
-    blurtemp_ = runtimePtr_->allocate_ndarray<uint8_t>({img.rows, img.cols}, {3}, true);
+    blurtemp_ = runtimePtr_->allocate_ndarray<uint8_t>({(unsigned int)img.rows, (unsigned int)img.cols}, {3}, true);
     uint8_t *blur_ptr = static_cast<uint8_t*>(blurtemp_.map());
     std::memset(blur_ptr, 0, img.total() * img.elemSize());
     blurtemp_.unmap();

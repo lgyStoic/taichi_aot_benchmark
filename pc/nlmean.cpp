@@ -10,14 +10,14 @@ void NLMEAN_APP::prepare() {
 
     // load image
     cv::Mat img = cv::imread("./build/assets/bench_case/house.jpg");
-    img_ = runtimePtr_->allocate_ndarray<uint8_t>({img.rows, img.cols}, {img.elemSize()}, true);
+    img_ = runtimePtr_->allocate_ndarray<uint8_t>({(unsigned int)img.rows, (unsigned int)img.cols}, {(unsigned int)img.elemSize()}, true);
     uint8_t *img_ptr = static_cast<uint8_t*>(img_.map());
     std::memcpy(img_ptr, img.data, img.total() * img.elemSize());
     img_.unmap();
     int padrows = img.rows + halfKernelSize_ + halfSearchSize_;
     int padcols = img.cols + halfKernelSize_ + halfSearchSize_;
-    img_pad_ = runtimePtr_->allocate_ndarray<uint8_t>({padrows, padcols}, {3}, true);
-    img_dest_ = runtimePtr_->allocate_ndarray<uint8_t>({padrows, padcols}, {3}, true);
+    img_pad_ = runtimePtr_->allocate_ndarray<uint8_t>({(unsigned int)padrows, (unsigned int)padcols}, {3}, true);
+    img_dest_ = runtimePtr_->allocate_ndarray<uint8_t>({(unsigned int)padrows, (unsigned int)padcols}, {3}, true);
 
     copyBorder_kernel_[0] = img_;
     copyBorder_kernel_[1] = img_pad_;
